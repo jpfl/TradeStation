@@ -1,0 +1,53 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_range_congestion
+Description : Determine whether or not we are in congestion
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	CALength(Numeric),
+	CAFactor(Numeric),
+	Lookback(Numeric);
+
+Variables:
+	ATR(0.0),
+	CAHigh(0.0),
+	CALow(0.0),
+	CARange(0.0),
+	ATR1(0.0),
+	CAHigh1(0.0),
+	CALow1(0.0),
+	CARange1(0.0);
+
+sff_range_congestion = False;
+
+ATR = Volatility(Lookback);
+CAHigh = Highest(High, CALength);
+CALow = Lowest(Low, CALength);
+CARange = CAHigh - CALow;
+ATR1 = Volatility(Lookback)[1];
+CAHigh1 = Highest(High, CALength)[1];
+CALow1 = Lowest(Low, CALength)[1];
+CARange1 = CAHigh1 - CALow1;
+
+If CARange > 0 Then Begin
+	Condition1 = CARange <= CAFactor * ATR;
+	Condition2 = CARange1 <= CAFactor * ATR1 and High <= CAHigh1 and Low >= CALow1;
+	If (Condition1 or Condition2) Then
+		sff_range_congestion = True;
+End;

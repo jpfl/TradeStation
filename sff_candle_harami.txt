@@ -1,0 +1,84 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_candle_harami
+Description : Identify a Harami Candlestick Pattern
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Variables:
+	RPClose(0.0),
+	RPOpen(0.0),
+	RPLimit(0.45),
+	RRLimit(0.60),
+	Harami1(False),
+	Harami2(False),
+	Harami3(False);
+
+sff_candle_harami = 0;
+
+RPClose = sff_range_rangepct(Close, High, Low);
+RPOpen = sff_range_rangepct(Open, High, Low);
+
+If Range[1] > 0 and Range[2] > 0 and Range[3] > 0 Then Begin
+	Condition1 = Low >= Low[1] and High <= High[1];
+	Condition2 = Close > Open;
+	Condition3 = RPClose[1] <= RPLimit and RPOpen[1] >= (1 - RPLimit);
+	Condition4 = (Range / Range[1]) <= RRLimit;
+	Harami1 = Condition1 and Condition2 and Condition3 and Condition4;
+
+	Condition1 = Low >= Low[2] and High <= High[2];
+	Condition2 = Low[1] >= Low[2] and High[1] <= High[2];
+	Condition3 = Close > Open;
+	Condition4 = RPClose[2] <= RPLimit and RPOpen[2] >= (1 - RPLimit);
+	Condition5 = (Range / Range[2]) <= RRLimit;
+	Harami2 = Condition1 and Condition2 and Condition3 and Condition4 and Condition5;
+
+	Condition1 = Low >= Low[3] and High <= High[3];
+	Condition2 = Low[1] >= Low[3] and High[1] <= High[3];
+	Condition3 = Low[2] >= Low[3] and High[2] <= High[3];
+	Condition4 = Close > Open;
+	Condition5 = RPClose[3] <= RPLimit and RPOpen[3] >= (1 - RPLimit);
+	Condition6 = (Range / Range[3]) <= RRLimit;
+	Harami3 = Condition1 and Condition2 and Condition3 and Condition4 and Condition5 and Condition6;
+
+	If Harami1 or Harami2 or Harami3 Then
+		sff_candle_harami = 1;
+
+	Condition1 = Low >= Low[1] and High <= High[1];
+	Condition2 = Close < Open;
+	Condition3 = RPOpen[1] <= RPLimit and RPClose[1] >= (1 - RPLimit);
+	Condition4 = (Range / Range[1]) <= RRLimit;
+	Harami1 = Condition1 and Condition2 and Condition3 and Condition4;
+
+	Condition1 = Low >= Low[2] and High <= High[2];
+	Condition2 = Low[1] >= Low[2] and High[1] <= High[2];
+	Condition3 = Close < Open;
+	Condition4 = RPOpen[2] <= RPLimit and RPClose[2] >= (1 - RPLimit);
+	Condition5 = (Range / Range[2]) <= RRLimit;
+	Harami2 = Condition1 and Condition2 and Condition3 and Condition4 and Condition5;
+
+	Condition1 = Low >= Low[3] and High <= High[3];
+	Condition2 = Low[1] >= Low[3] and High[1] <= High[3];
+	Condition3 = Low[2] >= Low[3] and High[2] <= High[3];
+	Condition4 = Close < Open;
+	Condition5 = RPOpen[3] <= RPLimit and RPClose[3] >= (1 - RPLimit);
+	Condition6 = (Range / Range[3]) <= RRLimit;
+	Harami3 = Condition1 and Condition2 and Condition3 and Condition4 and Condition5 and Condition6;
+
+	If Harami1 or Harami2 or Harami3 Then
+		sff_candle_harami = 2;
+End;

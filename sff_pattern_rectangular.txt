@@ -1,0 +1,52 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_pattern_rectangular
+Description : Determine whether the region is a rectangle
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	RectangleLength(Numeric),
+	RangeLength(Numeric),
+	RangeFactor(Numeric),
+	RangeRatio(Numeric),
+	VLength(Numeric);
+
+Variables:
+	ATR(0.0),
+	RectangleHigh(0.0),
+	RectangleLow(0.0),
+	RectangleRange(0.0),
+	RangeHigh(0.0),
+	RangeLow(0.0),
+	RangeRange(0.0);
+
+sff_pattern_rectangular = False;
+ATR = Volatility(VLength);
+
+RectangleHigh = Highest(High, RectangleLength);
+RectangleLow = Lowest(Low, RectangleLength);
+RectangleRange = RectangleHigh - RectangleLow;
+
+RangeHigh = Highest(High, RangeLength)[RectangleLength];
+RangeLow = Lowest(Low, RangeLength)[RectangleLength];
+RangeRange = RangeHigh - RangeLow;
+
+If RectangleRange > 0 and RangeRange > 0 Then
+	If (RectangleRange / RangeRange) <= RangeRatio and
+	RectangleRange <= RangeFactor * ATR Then
+		sff_pattern_rectangular = True;

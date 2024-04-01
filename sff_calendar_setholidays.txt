@@ -1,0 +1,89 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_calendar_setholidays
+Description : Determine this year's holidays (actual or observed)
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	GYear(Numeric),
+	Observed(TrueFalse),
+	Holiday[MaxSize1](NumericArrayRef),
+	HolidayName[MaxSize2](StringArrayRef);
+
+Variables:
+	ih(0),
+	rd(0),
+	HString("");
+
+ih = 0;
+rd = sff_calendar_newyear(GYear, HString);
+If Observed Then
+	If sff_calendar_dayofweek(rd) = 0 Then rd = rd + 1;
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_martinlutherking(GYear, HString);
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_presidents(GYear, HString);
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_goodfriday(GYear, HString);
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_memorial(GYear, HString);
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_independence(GYear, HString);
+If Observed Then Begin
+	If sff_calendar_dayofweek(rd) = 6 Then rd = rd - 1;
+	If sff_calendar_dayofweek(rd) = 0 Then rd = rd + 1;
+End;
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_labor(GYear, HString);
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_thanksgiving(GYear, HString);
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+rd = sff_calendar_christmas(GYear, HString);
+If Observed Then Begin
+	If sff_calendar_dayofweek(rd) = 6 Then rd = rd - 1;
+	If sff_calendar_dayofweek(rd) = 0 Then rd = rd + 1;
+End;
+Holiday[ih] = rd;
+HolidayName[ih] = HString;
+
+ih = ih + 1;
+sff_calendar_setholidays = ih;

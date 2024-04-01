@@ -1,0 +1,57 @@
+{
+Function    : sff_pattern_tail
+Description : Search for a Tail Pattern
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	Percent(Numeric),
+	RangeLength(Numeric);
+
+Variables:
+	RPOpen(0.0),
+	RPClose(0.0),
+	RPAve(0.0),
+	RangeHigh(0.0),
+	RangeLow(0.0),
+	RP25(0.25),
+	RP50(0.50);
+
+sff_pattern_tail = 0;
+
+RPOpen = sff_range_rangepct(Open, High, Low);
+RPClose = sff_range_rangepct(Close, High, Low);
+RPAve = (RPOpen + RPClose) / 2;
+RangeHigh = Highest(High, RangeLength);
+RangeLow = Lowest(Low, RangeLength);
+
+Condition1 = RPAve >= (1 - Percent);
+Condition2 = RPClose >= (1 - RP25);
+If (Condition1 or Condition2) and
+Low < Lowest(Low, RangeLength - 1)[1] and
+sff_range_rangepct(Low, RangeHigh, RangeLow) <= Percent and
+RPOpen > RP50 and
+RPClose > RP50 Then
+	sff_pattern_tail = 1;
+
+Condition1 = RPAve <= Percent;
+Condition2 = RPClose <= RP25;
+If (Condition1 or Condition2) and
+High > Highest(High, RangeLength - 1)[1] and
+sff_range_rangepct(High, RangeHigh, RangeLow) >= (1 - Percent) and
+RPOpen < RP50 and
+RPClose < RP50 Then
+	sff_pattern_tail = 2;

@@ -1,0 +1,65 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_calendar_nearestholiday
+Description : Determine the nearest holiday
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	RDate(Numeric),
+	Holidays(Numeric),
+	Holiday[MaxSize1](NumericArray),
+	HolidayIndex(NumericRef);
+
+Variables:
+	GYear(0),
+	GMonth(0),
+	GDay(0),
+	ih(0),
+	diff(0),
+	NearRD(0),
+	ird(0);
+
+Condition1 = sff_calendar_rdate2gdate(RDate, GYear, GMonth, GDay);
+diff = 366;
+For ih = 0 to Holidays-1 Begin
+	Value1 = Holiday[ih] - RDate;
+	Value2 = AbsValue(Value1);
+	If Value2 < diff Then Begin
+		diff = Value2;
+		HolidayIndex = ih;
+		Value3 = Value1;
+	End;
+End;
+
+NearRD = Holiday[HolidayIndex];
+If Value3 > 0 Then Begin
+	Value4 = RDate;
+	Value5 = NearRD;
+End Else Begin
+	Value4 = NearRD;
+	Value5 = RDate;
+End;
+For ird = Value4 To Value5 Begin
+	Value6 = sff_calendar_dayofweek(ird);
+	If Value6 = 0 or Value6 = 6 Then
+		diff = diff - 1;
+End;
+If Value3 > 0 Then
+	sff_calendar_nearestholiday = -diff
+Else
+	sff_calendar_nearestholiday = diff;

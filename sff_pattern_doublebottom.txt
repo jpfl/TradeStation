@@ -1,0 +1,45 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_pattern_doublebottom
+Description : Find a double bottom formation
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	LookbackBars(Numeric),
+	Strength(Numeric),
+	RangeFactor(Numeric);
+
+Variables:
+	RangeDelta(0.0),
+	HighPivot(0.0),
+	LowPivot(0.0),
+	LowMinimum(7);
+
+sff_pattern_doublebottom = -1;
+RangeDelta = RangeFactor * Volatility(LookbackBars);
+HighPivot = PivotHighVSBar(1, High, Strength, Strength, LookbackBars);
+LowPivot = PivotLowVSBar(1, Low, Strength, Strength, LookbackBars);
+
+If HighPivot <> -1 and
+LowPivot <> -1 and
+LowPivot >= LowMinimum and
+AbsValue(Low - Low[LowPivot]) <= RangeDelta and
+AbsValue(Low - Lowest(Low, LowPivot)) <= RangeDelta and
+HighPivot < LowPivot and
+Low <= Low[1] Then
+	sff_pattern_doublebottom = LowPivot;

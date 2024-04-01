@@ -1,0 +1,95 @@
+[LegacyColorValue = true]; 
+
+{
+Indicator   : sfi_calendar_show
+Description : Display key dates
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Variables:
+	GYear(0),
+	GMonth(0),
+	GDay(0),
+	RDate(0),
+	bdw(0),
+	bdws(""),
+	FDay(False),
+	LDay(False),
+	Holidays(0),
+	HolidayIndex(0),
+	HYear(0),
+	HMonth(0),
+	HDay(0),
+	HDays(0),
+	NearRD(0),
+	NearName(""),
+	ih(0),
+	Events(0),
+	EventIndex(0),
+	EYear(0),
+	EMonth(0),
+	EDay(0),
+	EDays(0),
+	ie(0);
+
+Arrays:
+	Holiday[20](0),
+	HolidayName[20](""),	
+	Event[100](0),
+	EventName[100]("");	
+
+If CommentaryEnabled Then Begin
+	RDate = sff_calendar_tdate2rdate(Date);
+	Condition1 = sff_calendar_rdate2gdate(RDate, GYear, GMonth, GDay);
+	CommentaryCL("GDate: ", NumToStr(GMonth, 0), " / ", NumToStr(GDay, 0), " / ", NumToStr(GYear, 0));
+	CommentaryCL("RDate: ", NumToStr(RDate, 0));
+	CommentaryCL("Day of Week: ", NumToStr(sff_calendar_dayofweek(RDate), 0));
+	bdw = sff_calendar_bizdayweek(RDate, FDay, LDay);
+	bdws = "";
+	If FDay Then bdws = " (first)";
+	If LDay Then bdws = " (last)";
+	CommentaryCL("Business Day of Week: ", NumToStr(bdw, 0), bdws);
+	CommentaryCL("Business Day of Month: ", NumToStr(sff_calendar_bizdaymonth(RDate), 0));
+	Holidays = sff_calendar_setholidays(GYear, True, Holiday, HolidayName);
+	HDays = sff_calendar_nearestholiday(RDate, Holidays, Holiday, HolidayIndex);
+	NearName = HolidayName[HolidayIndex];
+	If HDays < 0 Then
+		CommentaryCL("It is ", NumToStr(-HDays, 0), " business days before ", NearName, ".");		
+	If HDays > 0 Then
+		CommentaryCL("It is ", NumToStr(HDays, 0), " business days after ", NearName, ".");		
+	Events = sff_calendar_setevents(GYear, GMonth, Event, EventName);
+	EDays = sff_calendar_nearestevent(RDate, Events, Event, EventIndex);
+	NearName = EventName[EventIndex];
+	If EDays = 0 Then
+		CommentaryCL("Today's Event: ", NearName, ".");		
+	If EDays < 0 Then
+		CommentaryCL("It is ", NumToStr(-EDays, 0), " business days before ", NearName, ".");		
+	If EDays > 0 Then
+		CommentaryCL("It is ", NumToStr(EDays, 0), " business days after ", NearName, ".");		
+	CommentaryCL("Day of Year: ", NumToStr(sff_calendar_daynumber(GYear, GMonth, GDay), 0));
+	CommentaryCL("Remaining: ", NumToStr(sff_calendar_daysremain(GYear, GMonth, GDay), 0), NewLine);
+	CommentaryCL(NumToStr(GYear, 0), " Holiday Calendar:", NewLine);
+	For ih = 0 to Holidays-1 Begin
+		Condition1 = sff_calendar_rdate2gdate(Holiday[ih], HYear, HMonth, HDay);
+		CommentaryCL(HolidayName[ih], " ", NumToStr(HMonth, 0), " / ", NumToStr(HDay, 0));
+	End;
+	CommentaryCL(NewLine, "Events:", NewLine);
+	For ie = 0 to Events-1 Begin
+		Condition1 = sff_calendar_rdate2gdate(Event[ie], EYear, EMonth, EDay);
+		CommentaryCL(EventName[ie], " ", NumToStr(EMonth, 0), " / ", NumToStr(EDay, 0),
+					 " / ", NumToStr(EYear, 0));
+	End;
+End;

@@ -1,0 +1,38 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_util_tag2string
+Description : Convert a tag stream to its string equivalent
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	Start(Numeric),
+	Length(Numeric),
+	Increment(Numeric),
+	Offset(Numeric),
+	Precision(Numeric),
+	BitmapString[MaxSize](StringArrayRef);
+
+sff_util_tag2string = False;
+
+Value1 = Start;
+For Value2 = Offset To Offset + Length - 1 Begin
+	BitmapString[Value2] = NumToStr(Value1, Precision);
+	Value1 = Value1 + Increment;
+End;
+
+sff_util_tag2string = True;

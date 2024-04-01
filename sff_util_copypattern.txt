@@ -1,0 +1,39 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_util_copypattern
+Description : Copy a pattern
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	Pivots(NumericSimple),
+	InPattern[MaxSize1, MaxSize2](NumericArrayRef),
+	OutPattern[MaxSize3, MaxSize4](NumericArrayRef);
+
+Variables:
+	AbsPivots(0),
+	ip(0);
+
+sff_util_copypattern = False;
+AbsPivots = AbsValue(Pivots);
+For ip = 1 to AbsPivots Begin
+	OutPattern[ip, 0] = InPattern[ip, 0];
+	OutPattern[ip, 1] = InPattern[ip, 1];
+	OutPattern[ip, 2] = InPattern[ip, 2];
+	OutPattern[ip, 3] = InPattern[ip, 3];
+End;
+sff_util_copypattern = True;

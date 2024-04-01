@@ -1,0 +1,37 @@
+[LegacyColorValue = true]; 
+
+{
+Indicator   : sfi_pattern_compareroc
+Description : Plot the Comparative RS between 2 securities
+
+Setup       : Data1 (Stock 1)
+              Data2 (Stock 2)
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	Price1(Close of Data1),
+	Price2(Close of Data2),
+	Length(30);
+
+Variables:
+	ATR1(0.0),
+	ATR2(0.0);
+
+ATR1 = Volatility(Length) of Data1;
+ATR2 = Volatility(Length) of Data2;
+Plot1(sff_pattern_compareroc(Price1, Price2, ATR1, ATR2, Length), "ROC");
+Plot2(0, "Zero");

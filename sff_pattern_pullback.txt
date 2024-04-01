@@ -1,0 +1,59 @@
+[LegacyColorValue = true]; 
+
+{
+Function    : sff_pattern_pullback
+Description : Search for a Gann Pullback Pattern
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	ADXLimit(Numeric),
+	Length(Numeric);
+
+Variables:
+	RangeHigh(0.0),
+	RangeLow(0.0),
+	RPClose(0.0),
+	PullbackBars(3),
+	Percent(0.35),
+	RangeLength(5),
+	RangeFactor(0.7);
+
+sff_pattern_pullback = 0;
+
+RangeHigh = Highest(High, RangeLength);
+RangeLow = Lowest(Low, RangeLength);
+RPClose = sff_range_rangepct(Close, RangeHigh, RangeLow);
+
+Condition1 = sff_pattern_retracedown(PullbackBars) = True;
+Condition2 = sff_pattern_tail(Percent, RangeLength) = 1;
+Condition3 = sff_pattern_cobra(Percent, RangeFactor) = 1;
+
+If ADX(Length) >= ADXLimit and
+DMIPlus(Length) > DMIMinus(Length) and
+RPClose <= Percent and
+(Condition1 or Condition2 or Condition3) Then
+	sff_pattern_pullback = 1;
+
+Condition1 = sff_pattern_retraceup(PullbackBars) = True;
+Condition2 = sff_pattern_tail(Percent, RangeLength) = 2;
+Condition3 = sff_pattern_cobra(Percent, RangeFactor) = 2;
+
+If ADX(Length) >= ADXLimit and
+DMIMinus(Length) > DMIPlus(Length) and
+RPClose >= (1 - Percent) and
+(Condition1 or Condition2 or Condition3) Then
+	sff_pattern_pullback = 2;

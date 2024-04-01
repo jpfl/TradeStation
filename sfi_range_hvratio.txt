@@ -1,0 +1,39 @@
+[LegacyColorValue = true]; 
+
+{
+Indicator   : sfi_range_hvratio
+Description : Display the Historical Volatility Ratio
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+ 
+Inputs:
+	Length1(10),
+	Length2(100),
+	Cutoff(0.5);
+
+Variables:
+	HV1(0.0),
+	HV2(0.0),
+	HVR(0.0);
+
+HV1 = sff_range_volatility(Length1);
+HV2 = sff_range_volatility(Length2);
+If HV1 > 0 and HV2 > 0 Then Begin
+	HVR = HV1 / HV2;
+	Plot1(HVR, "HV Ratio");
+	Plot2(Average(HVR, Length1), "HVR Ave");
+	Plot3(Cutoff, "Cutoff");
+End;

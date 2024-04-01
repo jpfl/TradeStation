@@ -1,0 +1,59 @@
+{
+Function    : sff_util_logstats
+Description : Log price statistics to a file for import into R
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	LogFileName(String),
+	Delimiter(String);
+
+Variables:
+	dt(0),
+	TimeString(""),
+	StatsString("");
+
+sff_util_logstats = False;
+
+If CurrentBar >= 1 Then Begin
+	If CurrentBar = 1 Then Begin
+		{Write header}
+		StatsString = "Symbol" + Delimiter +
+			"Date" + Delimiter +
+			"Time" + Delimiter +
+			"Open" + Delimiter +
+			"High" + Delimiter +
+			"Low" + Delimiter +
+			"Close" + Delimiter +
+			"Volume" + NewLine;
+		FileAppend(LogFileName, StatsString);
+	End;
+	{Log prices for each bar of data}
+	dt = ELDateToDateTime(Date);
+	TimeString = NumToStr(Time, 0);
+	StatsString = GetSymbolName + Delimiter +
+		DateToString(dt) + Delimiter +
+		LeftStr(TimeString, StrLen(TimeString) - 2) + ":" + RightStr(TimeString, 2) + ":00" + Delimiter +
+		NumToStr(Open, 4) + Delimiter +
+		NumToStr(High, 4) + Delimiter +
+		NumToStr(Low, 4) + Delimiter +
+		NumToStr(Close, 4) + Delimiter +
+		NumToStr(Volume, 0) +
+		NewLine;
+	FileAppend(LogFileName, StatsString);
+End;
+
+sff_util_logstats = True;

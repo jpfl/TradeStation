@@ -1,0 +1,38 @@
+[LegacyColorValue = true]; 
+
+{
+System      : sfs_trade_closetrademanager
+Description : Manage closing trades
+
+Copyright 2024 Scottfree Gains LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}
+
+Inputs:
+	SystemID(""),
+	{Trade Logging}
+	LogTrades(False),
+	LogFile("Orders.txt");
+
+{Exit position after certain number of bars}
+
+If Close < Open Then
+	Sell("LX C<O") This Bar on Close;
+
+If Close > Open Then
+	BuyToCover("SX C>O") This Bar on Close;
+
+{Log Trades for Spreadsheet Export}
+If LogTrades Then
+	Condition1 = sff_util_logtrades(LogFile, SystemID);
